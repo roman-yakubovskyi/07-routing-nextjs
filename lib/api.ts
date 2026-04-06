@@ -7,60 +7,37 @@ const myAuthorization = 'Bearer ' + myKey;
 axios.defaults.baseURL = 'https://notehub-public.goit.study/api';
 axios.defaults.headers.common['Authorization'] = myAuthorization;
 
+export type NoteTag = 'all' | 'work' | 'personal' | 'todo';
+
 interface GetNotesHttpResponse {
-  notes: Note[]; // Відповідь містить масив нотаток у властивості results
-  totalPages: number; // Загальна кількість сторінок результатів
+  notes: Note[];
+  totalPages: number;
 }
 
-type GetNotesByIdHttpResponse = Note; // Відповідь містить нотатку
-type DeleteNotesHttpResponse = Note; // Відповідь містить нотатку
-type PostNotesHttpResponse = Note; // Відповідь містить нотатку
+type GetNotesByIdHttpResponse = Note;
+type DeleteNotesHttpResponse = Note;
+type PostNotesHttpResponse = Note;
 
-export async function fetchNotes(
-  nameSearch: string,
-  pageCurrent: number = 1
-): Promise<GetNotesHttpResponse> {
-  const options = {
-    params: {
-      search: nameSearch,
-      page: pageCurrent,
-      perPage: 12,
-    },
+export async function fetchNotes({
+  search = '',
+  page = 1,
+  tag = 'all',
+}: {
+  search?: string;
+  page?: number;
+  tag?: NoteTag;
+}): Promise<GetNotesHttpResponse> {
+  const params = {
+    search,
+    page,
+    perPage: 12,
+    ...(tag !== 'all' && { tag }),
   };
 
-  const response = await axios.get<GetNotesHttpResponse>('/notes', options);
-  return {
-    notes: response.data.notes,
-    totalPages: response.data.totalPages,
-  };
-}
+  const response = await axios.get<GetNotesHttpResponse>('/notes', {
+    params,
+  });
 
-export async function fetchNotesByTag(
-  nameSearch: string,
-  tag: string = 'all',
-  pageCurrent: number = 1
-): Promise<GetNotesHttpResponse> {
-  let options;
-  if (tag === 'all') {
-    options = {
-      params: {
-        search: nameSearch,
-        page: pageCurrent,
-        perPage: 12,
-      },
-    };
-  } else {
-    options = {
-      params: {
-        search: nameSearch,
-        page: pageCurrent,
-        tag: tag,
-        perPage: 12,
-      },
-    };
-  }
-
-  const response = await axios.get<GetNotesHttpResponse>('/notes', options);
   return {
     notes: response.data.notes,
     totalPages: response.data.totalPages,
@@ -70,27 +47,29 @@ export async function fetchNotesByTag(
 export async function fetchNoteById(
   noteId: string
 ): Promise<GetNotesByIdHttpResponse> {
-  if (noteId !== '') {
-    const response = await axios.get<GetNotesByIdHttpResponse>(
-      `/notes/${noteId}`
-    );
-    return response.data;
-  } else {
-    throw new Error('Note ID is required for deletion');
+  if (!noteId) {
+    throw new Error('Note ID is required to fetch note');
   }
+
+  const response = await axios.get<GetNotesByIdHttpResponse>(
+    `/notes/${noteId}`
+  );
+
+  return response.data;
 }
 
 export async function deleteNote(
   noteId: string
 ): Promise<DeleteNotesHttpResponse> {
-  if (noteId !== '') {
-    const response = await axios.delete<DeleteNotesHttpResponse>(
-      `/notes/${noteId}`
-    );
-    return response.data;
-  } else {
+  if (!noteId) {
     throw new Error('Note ID is required for deletion');
   }
+
+  const response = await axios.delete<DeleteNotesHttpResponse>(
+    `/notes/${noteId}`
+  );
+
+  return response.data;
 }
 
 export async function createNote(
@@ -100,5 +79,6 @@ export async function createNote(
     '/notes',
     noteCreate
   );
+
   return response.data;
 }

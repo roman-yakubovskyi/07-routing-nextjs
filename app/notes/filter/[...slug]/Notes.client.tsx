@@ -7,13 +7,13 @@ import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import Modal from '@/components/Modal/Modal';
 import NoteForm from '@/components/NoteForm/NoteForm';
-import { fetchNotesByTag } from '@/lib/api';
+import { fetchNotes, type NoteTag } from '@/lib/api';
 import { useQuery } from '@tanstack/react-query';
 import { keepPreviousData } from '@tanstack/react-query';
 import { useDebouncedCallback } from 'use-debounce';
 
 interface NotePageProps {
-  tag: string;
+  tag: NoteTag;
 }
 const NotesPage = ({ tag }: NotePageProps) => {
   const [query, setQuery] = useState<string>('');
@@ -24,7 +24,12 @@ const NotesPage = ({ tag }: NotePageProps) => {
   }, []);
   const { data } = useQuery({
     queryKey: ['notes', query, tag, page],
-    queryFn: async () => fetchNotesByTag(query, tag, page),
+    queryFn: async () =>
+      fetchNotes({
+        search: query,
+        tag,
+        page,
+      }),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   });

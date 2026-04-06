@@ -19,16 +19,6 @@ const Header = () => {
               Notes
             </Link>
           </li>
-          <li className={css.navigationItem}>
-            <Link href="/profile" className={css.navigationLink}>
-              Profile
-            </Link>
-          </li>
-          <li className={css.navigationItem}>
-            <Link href="/about" className={css.navigationLink}>
-              About
-            </Link>
-          </li>
         </ul>
       </nav>
     </header>
