@@ -11,6 +11,7 @@ import { createNote } from '@/lib/api';
 interface NoteFormProps {
   onClose: () => void;
   currentQuery: string;
+  currentTag: string;
 }
 
 const initialValuesForm: NoteFormValues = {

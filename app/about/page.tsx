@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description: 'About page of my app',
 };
 
-export default function About() {
-  return <div>About</div>;
-}
+const About = () => {
+  return (
+    <div>
+      <p>About Page</p>
+    </div>
+  );
+};
+export default About;

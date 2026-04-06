@@ -8,6 +8,7 @@ import { deleteNote } from '@/lib/api';
 interface NoteListProps {
   notes: Note[];
   currentQuery: string;
+  currentTag: string;
 }
 
 export default function NoteList({ notes, currentQuery }: NoteListProps) {

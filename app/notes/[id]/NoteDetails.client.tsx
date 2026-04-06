@@ -7,7 +7,6 @@ import { fetchNoteById } from '@/lib/api';
 
 const NoteDetailsClient = () => {
   const { id } = useParams<{ id: string }>();
-
   const {
     data: note,
     isLoading,
@@ -17,13 +16,8 @@ const NoteDetailsClient = () => {
     queryFn: () => fetchNoteById(id),
     refetchOnMount: false,
   });
-
   if (isLoading) return <p>Loading, please wait...</p>;
-
   if (error || !note) return <p>Something went wrong.</p>;
-
-  //     ? `Updated at: ${note.updatedAt}`
-
   return (
     <div className={css.container}>
       <div className={css.item}>
